@@ -43,10 +43,6 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         });
     },
 
-                }
-            }
-        }, { quoted: mek });
-
     } catch (e) {
         console.error("Error in alive command:", e);
         reply(`An error occurred: ${e.message}`);
