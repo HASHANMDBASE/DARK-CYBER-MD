@@ -1,10 +1,10 @@
 const { cmd, commands } = require('../command');
 const os = require("os");
-const { runtime } = require('../lib/functions');
+const { runtime } = require('../lib/functions'); // Make sure this path is correct and the function is exported
 
 cmd({
     pattern: "alive",
-    alias: ["status", "runtime", "uptime"],
+    alias: ["status", "uptime"],
     desc: "Check uptime and system status",
     category: "main",
     react: "👋",
@@ -12,38 +12,37 @@ cmd({
 },
 async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
     try {
+        // Ensure 'pushname' is correctly populated from your bot's framework.
+        // If 'pushname' is sometimes undefined, you might want to provide a fallback, e.g., 'mek.pushName || "User"'.
+        const userPushName = pushname || "මිත්‍රයා"; // Fallback if pushname is not available
+
         // Generate system status message
-        const status = `          
-╭━━〔 *DARK-CYBER-MD* 〕━━┈⊷
-┃◈╭─────────────·๏
-┃◈┃• *👋Hi*: ${pushname}
-┃◈┃• *⏳Uptime*:  ${runtime(process.uptime())} 
-┃◈┃• *📟 Ram*: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)}MB / ${(os.totalmem() / 1024 / 1024).toFixed(2)}MB
-┃◈┃• *👨‍💻 Owner*: Hashiya Tech </>
-┃◈└───────────┈⊷
-╰──────────────┈⊷
+        const status = `
+┏━━👨‍💻* BOT INFO *🧑‍💻━━┓
+┃ 🤖 *Name:* ${config.BOT_NAME}
+┃ 👑 *Owner:* ${config.OWNER_NAME}
+┃ 🏷️ *Version:* ${config.BOT_VERSION}
+┃ ☁️ *Platform:* Heroku
+┃ ⏳ *Uptime:* ${hours}h ${minutes}m ${seconds}s
+┗━━━━━━━━━━━━━━━━━━┛
 
-  *DARK-CYBER-MD Multidevice Whatsapp Bot Make By Hashiya Tech*
+🌐 *Website:* Coming Soon...
+💌 *Thanks for using ${config.BOT_NAME}!*`.trim();
 
- ⭕ FOLLOW 𝗢𝗨𝗥 𝗪𝗛𝗔𝗧𝗦𝗔𝗣𝗣 𝗖𝗛𝗔𝗡𝗡𝗘𝗟
-     
- _https://whatsapp.com/channel/0029VazhnLzK0IBdwXG4152o_
+        const footer = `💠 ${config.BOT_FOOTER} 💠`;
 
-  
-> *POWERED BY DARK-CYBER-MD 📌️*`;
+        await socket.sendMessage(sender, {
+            image: { url: config.BUTTON_IMAGES.ALIVE },
+            caption: formatMessage(title, content, footer),
+            buttons: [
+                { buttonId: `${config.PREFIX}menu`, buttonText: { displayText: 'MENU' }, type: 1 },
+                { buttonId: `${config.PREFIX}ping`, buttonText: { displayText: 'PING' }, type: 1 }
+            ],
+            headerType: 4,
+            quoted: msg
+        });
+    },
 
-
-        await conn.sendMessage(from, { 
-            image: { url: `https://i.ibb.co/dYsHR6j/619.jpg` },  // Image URL
-            caption: status,
-            contextInfo: {
-                mentionedJid: [m.sender],
-                forwardingScore: 999,
-                isForwarded: true,
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363395674230271@newsletter',
-                    newsletterName: 'DARK-CYBER-MD',
-                    serverMessageId: 190
                 }
             }
         }, { quoted: mek });
